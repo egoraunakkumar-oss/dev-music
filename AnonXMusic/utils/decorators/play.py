@@ -113,7 +113,16 @@ def PlayWrapper(command):
             fplay = None
 
         if not await is_active_chat(chat_id):
-            userbot = await get_assistant(chat_id)
+            try:
+                userbot = await get_assistant(chat_id)
+            except Exception:
+                return await message.reply_text(
+                    "Assistant is not online yet. Please try again in a few seconds."
+                )
+            if userbot is None:
+                return await message.reply_text(
+                    "No assistant is available for playback. Check STRING_SESSION on Railway."
+                )
             try:
                 try:
                     try:

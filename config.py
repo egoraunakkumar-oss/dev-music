@@ -17,7 +17,7 @@ MONGO_DB_URI = getenv("MONGO_DB_URI")
 
 # YouTube API
 YTPROXY_URL = getenv(
-    "YTPROXY_URL", "https://tgapi.xbitcode.com"
+    "YTPROXY_URL", ""
 )
 YT_API_KEY = getenv("YT_API_KEY")
 

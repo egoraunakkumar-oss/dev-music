@@ -37,19 +37,40 @@ async def init():
         importlib.import_module("AnonXMusic.plugins" + all_module)
     LOGGER("AnonXMusic.plugins").info("Successfully Imported Modules...")
     await app.start()
-    await userbot.start()
-    await Anony.start()
+    LOGGER("AnonXMusic").info("Telegram bot client started; initializing assistants...")
+    try:
+        await userbot.start()
+    except Exception:
+        LOGGER(__name__).exception(
+            "Assistant startup failed. Keeping the Telegram bot online so /start and diagnostics still work."
+        )
+    try:
+        await Anony.start()
+    except Exception:
+        LOGGER(__name__).exception(
+            "PyTgCalls startup failed. Keeping the Telegram bot online without voice-chat playback."
+        )
     # Do not probe the logger chat with a voice-call stream here. A logger
     # group normally has no active voice chat, and treating that expected
     # condition as fatal causes Railway to restart the bot in a loop before
     # it reaches idle() and starts handling commands.
-    await Anony.decorators()
+    try:
+        await Anony.decorators()
+    except Exception:
+        LOGGER(__name__).exception("Could not register PyTgCalls update handlers.")
+    LOGGER("AnonXMusic").info("Startup complete; waiting for Telegram updates.")
     try:
         await idle()
     finally:
-        await Anony.stop()
-        await userbot.stop()
-        await app.stop()
+        for component, name in (
+            (Anony, "PyTgCalls"),
+            (userbot, "assistants"),
+            (app, "bot"),
+        ):
+            try:
+                await component.stop()
+            except Exception:
+                LOGGER(__name__).exception("Error while stopping %s.", name)
         LOGGER("AnonXMusic").info("Stopping AnonX Music Bot...")
 
 

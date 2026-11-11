@@ -378,14 +378,46 @@ class YouTubeAPI:
             finally:
                 session.close()
 
+        async def local_ytdlp_download(vid_id, video=False):
+            """Use the installed yt-dlp backend when the optional API is unavailable."""
+            output_dir = "downloads"
+            os.makedirs(output_dir, exist_ok=True)
+            options = {
+                "outtmpl": os.path.join(output_dir, f"{vid_id}.%(ext)s"),
+                "noplaylist": True,
+                "quiet": True,
+                "no_warnings": True,
+                "retries": 3,
+                "format": "bestvideo+bestaudio/best" if video else "bestaudio/best",
+            }
+            if not video:
+                options["postprocessors"] = [{
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "192",
+                }]
+            try:
+                await loop.run_in_executor(
+                    None,
+                    lambda: yt_dlp.YoutubeDL(options).download(
+                        [self.base + vid_id]
+                    ),
+                )
+                extension = "mp4" if video else "mp3"
+                filepath = os.path.join(output_dir, f"{vid_id}.{extension}")
+                return filepath if os.path.exists(filepath) else None
+            except Exception as e:
+                logger.error(f"Direct yt-dlp download failed: {type(e).__name__}: {e}")
+                return None
+
         async def audio_dl(vid_id):
             try:
                 if not YT_API_KEY:
-                    logger.error("API KEY not set in config, Set API Key you got from @tgmusic_apibot")
-                    return None
+                    logger.warning("YT_API_KEY is not set; using direct yt-dlp download.")
+                    return await local_ytdlp_download(vid_id)
                 if not YTPROXY:
-                    logger.error("API Endpoint not set in config\nPlease set a valid endpoint for YTPROXY_URL in config.")
-                    return None
+                    logger.warning("YTPROXY_URL is not set; using direct yt-dlp download.")
+                    return await local_ytdlp_download(vid_id)
                 
                 headers = {
                     "x-api-key": f"{YT_API_KEY}",
@@ -437,11 +469,11 @@ class YouTubeAPI:
         async def video_dl(vid_id):
             try:
                 if not YT_API_KEY:
-                    logger.error("API KEY not set in config, Set API Key you got from @tgmusic_apibot")
-                    return None
+                    logger.warning("YT_API_KEY is not set; using direct yt-dlp download.")
+                    return await local_ytdlp_download(vid_id, video=True)
                 if not YTPROXY:
-                    logger.error("API Endpoint not set in config\nPlease set a valid endpoint for YTPROXY_URL in config.")
-                    return None
+                    logger.warning("YTPROXY_URL is not set; using direct yt-dlp download.")
+                    return await local_ytdlp_download(vid_id, video=True)
                 
                 headers = {
                     "x-api-key": f"{YT_API_KEY}",
