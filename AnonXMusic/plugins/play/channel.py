@@ -34,6 +34,8 @@ async def playmode_(client, message: Message, _):
             return await message.reply_text(_["cplay_4"])
         if chat.type != ChatType.CHANNEL:
             return await message.reply_text(_["cplay_5"])
+        cusn = None
+        crid = None
         try:
             async for user in app.get_chat_members(
                 chat.id, filter=ChatMembersFilter.ADMINISTRATORS
@@ -42,6 +44,8 @@ async def playmode_(client, message: Message, _):
                     cusn = user.user.username
                     crid = user.user.id
         except:
+            return await message.reply_text(_["cplay_4"])
+        if crid is None:
             return await message.reply_text(_["cplay_4"])
         if crid != message.from_user.id:
             return await message.reply_text(_["cplay_6"].format(chat.title, cusn))

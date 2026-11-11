@@ -33,21 +33,26 @@ class Anony(Client):
             )
         except (errors.ChannelInvalid, errors.PeerIdInvalid):
             LOGGER(__name__).error(
-                "Bot has failed to access the log group/channel. Make sure that you have added your bot to your log group/channel."
+                "Bot could not access LOGGER_ID; startup logging is disabled. "
+                "Verify LOGGER_ID and add the bot to that chat."
             )
-            exit()
         except Exception as ex:
             LOGGER(__name__).error(
-                f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).__name__}."
+                f"Startup log message failed; continuing without it. Reason: {type(ex).__name__}."
             )
-            exit()
-
-        a = await self.get_chat_member(config.LOGGER_ID, self.id)
-        if a.status != ChatMemberStatus.ADMINISTRATOR:
-            LOGGER(__name__).error(
-                "Please promote your bot as an admin in your log group/channel."
+        try:
+            a = await self.get_chat_member(config.LOGGER_ID, self.id)
+            if a.status not in (
+                ChatMemberStatus.ADMINISTRATOR,
+                ChatMemberStatus.OWNER,
+            ):
+                LOGGER(__name__).warning(
+                    "Bot is not an admin in LOGGER_ID; activity logging may fail."
+                )
+        except Exception as ex:
+            LOGGER(__name__).warning(
+                f"Could not verify logger permissions; continuing. Reason: {type(ex).__name__}."
             )
-            exit()
         LOGGER(__name__).info(f"Music Bot Started as {self.name}")
 
     async def stop(self):

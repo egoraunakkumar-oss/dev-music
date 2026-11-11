@@ -129,7 +129,7 @@ def time_to_seconds(time):
     )
 
 
-DURATION_LIMIT = int(time_to_seconds(f"{DURATION_LIMIT_MIN}:360"))
+DURATION_LIMIT = int(DURATION_LIMIT_MIN * 60)
 
 if SUPPORT_CHANNEL:
     if not re.match(r"(?:http|https)://", SUPPORT_CHANNEL):

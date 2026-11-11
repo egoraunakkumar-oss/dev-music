@@ -319,7 +319,7 @@ class Call(PyTgCalls):
             await assistant.play(
                 chat_id,
                 stream,
-                config=GroupCallConfig(auto_start=False),
+                config=GroupCallConfig(auto_start=True),
             )
             # await assistant.join_group_call(
             #     chat_id,
@@ -575,7 +575,7 @@ class Call(PyTgCalls):
             pings.append(self.four.ping)
         if config.STRING5:
             pings.append(self.five.ping)
-        return str(round(sum(pings) / len(pings), 3))
+        return str(round(sum(pings) / len(pings), 3)) if pings else "0"
 
     async def start(self):
         LOGGER(__name__).info("Starting PyTgCalls Client...\n")

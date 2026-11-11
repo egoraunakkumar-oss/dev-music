@@ -63,7 +63,7 @@ class Userbot(Client):
                 LOGGER(__name__).error(
                     "Assistant Account 1 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin!"
                 )
-                exit()
+                LOGGER(__name__).warning("Continuing with Assistant Account 1; logger message was not delivered.")
             self.one.id = self.one.me.id
             self.one.name = self.one.me.mention
             if not self.one.me.username:
@@ -87,7 +87,7 @@ class Userbot(Client):
                 LOGGER(__name__).error(
                     "Assistant Account 2 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin!"
                 )
-                exit()
+                LOGGER(__name__).warning("Continuing with Assistant Account 2; logger message was not delivered.")
             self.two.id = self.two.me.id
             self.two.name = self.two.me.mention
             if not self.two.me.username:
@@ -111,7 +111,7 @@ class Userbot(Client):
                 LOGGER(__name__).error(
                     "Assistant Account 3 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
-                exit()
+                LOGGER(__name__).warning("Continuing with Assistant Account 3; logger message was not delivered.")
             self.three.id = self.three.me.id
             self.three.name = self.three.me.mention
             if not self.three.me.username:
@@ -135,7 +135,7 @@ class Userbot(Client):
                 LOGGER(__name__).error(
                     "Assistant Account 4 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
-                exit()
+                LOGGER(__name__).warning("Continuing with Assistant Account 4; logger message was not delivered.")
             self.four.id = self.four.me.id
             self.four.name = self.four.me.mention
             if not self.four.me.username:
@@ -159,7 +159,7 @@ class Userbot(Client):
                 LOGGER(__name__).error(
                     "Assistant Account 5 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
-                exit()
+                LOGGER(__name__).warning("Continuing with Assistant Account 5; logger message was not delivered.")
             self.five.id = self.five.me.id
             self.five.name = self.five.me.mention
             if not self.five.me.username:

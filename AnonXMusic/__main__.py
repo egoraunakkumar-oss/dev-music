@@ -2,8 +2,6 @@ import asyncio
 import importlib
 
 from pyrogram import idle
-from pytgcalls.exceptions import NoActiveGroupCall
-
 import config
 from AnonXMusic import LOGGER, app, userbot
 from AnonXMusic.core.call import Anony
@@ -41,16 +39,10 @@ async def init():
     await app.start()
     await userbot.start()
     await Anony.start()
-    try:
-        await Anony.stream_call("https://te.legra.ph/file/29f784eb49d230ab62e9e.mp4")
-    except NoActiveGroupCall:
-        LOGGER("AnonXMusic").error(
-            "Please turn on the videochat of your log group/channel.\n\nStopping Bot..."
-        )
-        exit()
-    except:
-        pass
-
+    # Do not probe the logger chat with a voice-call stream here. A logger
+    # group normally has no active voice chat, and treating that expected
+    # condition as fatal causes Railway to restart the bot in a loop before
+    # it reaches idle() and starts handling commands.
     await Anony.decorators()
     try:
         await idle()
