@@ -1,4 +1,5 @@
 import logging
+import sys
 
 logging.basicConfig(
     level=logging.INFO,
@@ -6,7 +7,7 @@ logging.basicConfig(
     datefmt="%d-%b-%y %H:%M:%S",
     handlers=[
         logging.FileHandler("log.txt"),
-        logging.StreamHandler(),
+        logging.StreamHandler(sys.stdout),
     ],
 )
 
