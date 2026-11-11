@@ -32,26 +32,33 @@ async def init():
             BANNED_USERS.add(user_id)
     except:
         pass
-    await app.start()
+    # Register every handler before starting the Pyrogram client. Starting the
+    # client first can leave the dispatcher without command handlers, making
+    # /start and /play appear to be ignored.
     for all_module in ALL_MODULES:
         importlib.import_module("AnonXMusic.plugins" + all_module)
     LOGGER("AnonXMusic.plugins").info("Successfully Imported Modules...")
+    await app.start()
     await userbot.start()
     await Anony.start()
     try:
         await Anony.stream_call("https://te.legra.ph/file/29f784eb49d230ab62e9e.mp4")
     except NoActiveGroupCall:
         LOGGER("AnonXMusic").error(
-            "Please turn on the videochat of your log group\channel.\n\nStopping Bot..."
+            "Please turn on the videochat of your log group/channel.\n\nStopping Bot..."
         )
         exit()
     except:
         pass
 
     await Anony.decorators()
-    await idle()
-    await app.stop()
-    LOGGER("AnonXMusic").info("Stopping AnonX Music Bot...")
+    try:
+        await idle()
+    finally:
+        await Anony.stop()
+        await userbot.stop()
+        await app.stop()
+        LOGGER("AnonXMusic").info("Stopping AnonX Music Bot...")
 
 
 if __name__ == "__main__":
