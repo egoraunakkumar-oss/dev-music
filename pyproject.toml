@@ -1,8 +1,8 @@
 [project]
 name = "music"
 version = "0.1.0"
-description = "Music Bot repo"
-readme = ".github/README.md"
+description = "DEV-MUSIC Telegram voice chat music bot"
+readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aiofiles==25.1.0",
